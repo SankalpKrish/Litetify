@@ -1,0 +1,17 @@
+.browse-discover-section {
+  /* scroll anchor target */
+}
+
+.view-all-btn {
+  background: none;
+  border: none;
+  color: var(--lt-fg-tertiary);
+  cursor: pointer;
+  font-size: var(--lt-font-size-sm);
+  padding: 0;
+  margin-left: auto;
+}
+
+.view-all-btn:hover {
+  color: var(--lt-fg-primary);
+}

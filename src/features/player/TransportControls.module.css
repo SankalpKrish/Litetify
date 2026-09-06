@@ -1,0 +1,5 @@
+.transport-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--lt-space-md);
+}

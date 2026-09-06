@@ -1,0 +1,10 @@
+{
+  "name": "Skip to Favorite",
+  "version": "1.0.0",
+  "type": "extension",
+  "entry": "extension.js",
+  "description": "Adds a 'Skip to Favorite' button that skips to a saved section of the current track.",
+  "author": "Litetify",
+  "litetifyApiVersion": "1.0.0",
+  "permissions": ["player", "storage"]
+}

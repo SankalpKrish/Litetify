@@ -1,0 +1,36 @@
+.volume-control {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.volume-bar {
+  flex: 1 1 160px;
+  min-width: 80px;
+  max-width: 300px;
+  height: 4px;
+  background: var(--lt-bg-hover);
+  border-radius: var(--lt-radius-sm);
+  cursor: pointer;
+  position: relative;
+  transition: transform var(--lt-transition-fast);
+}
+
+.volume-bar:hover {
+  transform: scaleY(1.5);
+  transform-origin: center;
+  height: 4px;
+}
+
+.volume-fill {
+  height: 100%;
+  background: var(--lt-fg-primary);
+  border-radius: var(--lt-radius-sm);
+  transform-origin: left;
+  transition: transform 0.1s;
+}
+
+.volume-bar:hover .volume-fill {
+  background: var(--lt-accent);
+}

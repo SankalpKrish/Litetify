@@ -1,0 +1,71 @@
+.np-info {
+  display: flex;
+  align-items: center;
+  gap: var(--lt-space-md);
+  min-width: 0;
+  opacity: 1;
+  transition: opacity var(--lt-transition-normal);
+}
+
+.np-paused {
+  opacity: 0.6;
+}
+
+.np-empty {
+  opacity: 0.4;
+}
+
+.np-art {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--lt-radius-sm);
+  object-fit: cover;
+  flex-shrink: 0;
+  background: var(--lt-bg-hover);
+  will-change: transform;
+}
+
+.np-art-fallback {
+  background: var(--lt-bg-elevated);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.np-art-fallback::after {
+  content: '\266B';
+  font-size: 1.5rem;
+  color: var(--lt-fg-tertiary);
+}
+
+.np-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.np-name {
+  font-size: var(--lt-font-size-base);
+  font-weight: var(--lt-font-weight-semibold);
+  color: var(--lt-fg-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: clamp(100px, 15vw, 220px);
+}
+
+.np-artist {
+  font-size: var(--lt-font-size-sm);
+  color: var(--lt-fg-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: clamp(100px, 15vw, 220px);
+}
+
+.np-placeholder {
+  font-weight: var(--lt-font-weight-normal);
+  color: var(--lt-fg-secondary);
+  font-size: var(--lt-font-size-sm);
+}

@@ -1,0 +1,183 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_call:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_MANIFEST_PATH: src-tauri/Cargo.toml
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          components: clippy
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Install Tauri system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev \
+            librsvg2-dev patchelf libxdo-dev
+      - run: bun install
+      - run: cargo clippy --manifest-path ${{ env.CARGO_MANIFEST_PATH }} -- -D warnings
+      - run: bun run lint
+
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install
+      - run: bun run format:check
+
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install
+      - run: bun run typecheck
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - uses: Swatinem/rust-cache@v2
+      - name: Install Tauri system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev \
+            librsvg2-dev patchelf libxdo-dev gnome-keyring dbus-x11
+      - run: bun install
+      - name: Frontend tests
+        run: bun run test
+      - name: Rust tests
+        run: |
+          dbus-run-session -- sh -c '
+            echo "$KEYRING_PASSPHRASE" | gnome-keyring-daemon --unlock --daemonize 2>/dev/null || true
+            cargo test --manifest-path ${{ env.CARGO_MANIFEST_PATH }}
+          '
+        env:
+          KEYRING_PASSPHRASE: litetify_test_keyring
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [lint, format, typecheck, test]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Install Tauri system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev \
+            librsvg2-dev patchelf libxdo-dev
+      - uses: Swatinem/rust-cache@v2
+      - run: bun install
+      - run: bun run build
+
+  # Pre-release gates — verify no dev-mode remnants or type drift
+  pre-release-gates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install
+      - name: No devMode references
+        run: |
+          if grep -rn 'devMode\|dev-mode\|dev_mode\|DEV_' src/ --include='*.ts' --include='*.tsx' --include='*.css' 2>/dev/null; then
+            echo "ERROR: Found devMode references — remove before release"
+            exit 1
+          fi
+          echo "✓ No devMode references found"
+      - name: Generated types in sync (if types:generate exists)
+        run: |
+          if bun run types:generate -- --check 2>/dev/null; then
+            echo "types:generate script found — checking drift"
+            bun run types:generate
+            if ! git diff --exit-code src/lib/types.generated.ts 2>/dev/null; then
+              echo "ERROR: Generated types are out of sync with Rust structs. Run 'bun run types:generate' and commit."
+              exit 1
+            fi
+            echo "✓ Generated types are in sync"
+          else
+            echo "ℹ types:generate script not available, skipping type-drift check"
+          fi
+      - name: No eprintln! in release code
+        run: |
+          if grep -rn 'eprintln!' src-tauri/src/ --include='*.rs' 2>/dev/null; then
+            echo "ERROR: eprintln! found — convert to log crate or strip"
+            exit 1
+          fi
+          echo "✓ No eprintln! in release code"
+      - name: Cargo fmt check
+        run: cargo fmt --manifest-path ${{ env.CARGO_MANIFEST_PATH }} --check
+
+  security-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - name: Install Tauri system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev \
+            librsvg2-dev patchelf libxdo-dev
+      - name: Install cargo-audit
+        run: cargo install cargo-audit --locked
+      - name: Run cargo audit
+        run: cd src-tauri && cargo audit
+
+  code-quality:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: nightly
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Install Tauri system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev \
+            librsvg2-dev patchelf libxdo-dev
+      - run: bun install
+      - name: Check for unused code (knip)
+        run: bun run knip || echo "knip found issues (informational)"
+        continue-on-error: true
+      - name: Spell check (cspell)
+        run: bun run spellcheck || echo "cspell found issues (informational)"
+        continue-on-error: true
+      - name: Check for unused Rust dependencies (cargo-udeps)
+        run: |
+          cargo install cargo-udeps --locked
+          cargo udeps --manifest-path ${{ env.CARGO_MANIFEST_PATH }} || echo "cargo-udeps found issues (informational)"
+        continue-on-error: true

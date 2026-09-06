@@ -1,0 +1,21 @@
+.shell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: var(--lt-space-sm);
+  user-select: none;
+}
+
+.shell h1 {
+  margin: 0;
+  font-size: var(--lt-font-size-3xl);
+  letter-spacing: -0.03em;
+}
+
+.status {
+  margin-top: var(--lt-space-lg);
+  color: var(--lt-fg-secondary);
+  font-size: var(--lt-font-size-base);
+}

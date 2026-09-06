@@ -1,0 +1,19 @@
+:root {
+  --lt-bg-base: #050508;
+  --lt-bg-elevated: #0a0a0f;
+  --lt-bg-highlight: #101018;
+  --lt-bg-hover: rgba(100, 140, 255, 0.08);
+  --lt-bg-active: rgba(100, 140, 255, 0.15);
+  --lt-bg-sidebar: #030306;
+
+  --lt-fg-primary: #e8e8f0;
+  --lt-fg-secondary: #8888a0;
+  --lt-fg-tertiary: #585870;
+
+  --lt-accent: #5b7dff;
+  --lt-accent-hover: #7b99ff;
+  --lt-accent-subtle: rgba(91, 125, 255, 0.15);
+
+  --lt-border: rgba(100, 140, 255, 0.08);
+  --lt-border-hover: rgba(100, 140, 255, 0.15);
+}

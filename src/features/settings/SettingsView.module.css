@@ -1,0 +1,233 @@
+.settings-view {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-tabs {
+  display: flex;
+  gap: var(--lt-space-sm);
+  margin-bottom: var(--lt-space-xl);
+  border-bottom: 1px solid var(--lt-border);
+  padding-bottom: var(--lt-space-sm);
+}
+
+.settings-tab {
+  background: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+  padding: var(--lt-space-sm) var(--lt-space-lg);
+  min-height: 44px;
+  border-radius: var(--lt-radius-md);
+  font-size: var(--lt-font-size-base);
+  font-weight: var(--lt-font-weight-medium);
+  color: var(--lt-fg-secondary);
+  transition:
+    color var(--lt-transition-fast),
+    background var(--lt-transition-fast);
+}
+
+.settings-tab:hover {
+  color: var(--lt-fg-primary);
+  background: var(--lt-bg-hover);
+}
+
+.settings-tab-active {
+  color: var(--lt-fg-primary);
+  background: var(--lt-bg-highlight);
+}
+
+.settings-content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.settings-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lt-space-xl);
+}
+
+.settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--lt-space-lg);
+}
+
+.settings-header h2 {
+  margin: 0;
+  font-size: var(--lt-font-size-xl);
+  font-weight: var(--lt-font-weight-bold);
+}
+
+.settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lt-space-md);
+}
+
+.settings-section h3 {
+  margin: 0;
+  font-size: var(--lt-font-size-md);
+  font-weight: var(--lt-font-weight-semibold);
+  color: var(--lt-fg-secondary);
+}
+
+.settings-section-errors h3 {
+  color: var(--lt-error);
+}
+
+.settings-slider-row {
+  display: flex;
+  align-items: center;
+  gap: var(--lt-space-sm);
+}
+
+.settings-slider {
+  flex: 1;
+  accent-color: var(--lt-accent);
+  cursor: pointer;
+}
+
+.mod-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--lt-border);
+  border-radius: var(--lt-radius-lg);
+  overflow: hidden;
+}
+
+.mod-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--lt-space-lg);
+  padding: var(--lt-space-md) var(--lt-space-lg);
+  background: var(--lt-bg-elevated);
+  transition: background var(--lt-transition-fast);
+}
+
+.mod-item:hover {
+  background: var(--lt-bg-highlight);
+}
+
+.mod-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.mod-item-info strong {
+  font-size: var(--lt-font-size-base);
+  font-weight: var(--lt-font-weight-semibold);
+}
+
+.mod-item-version {
+  font-size: var(--lt-font-size-xs);
+  color: var(--lt-fg-tertiary);
+  margin-left: var(--lt-space-sm);
+}
+
+.mod-item-desc {
+  margin: 0;
+  font-size: var(--lt-font-size-sm);
+  color: var(--lt-fg-secondary);
+  line-height: 1.4;
+}
+
+.mod-item-author {
+  font-size: var(--lt-font-size-xs);
+  color: var(--lt-fg-tertiary);
+}
+
+.mod-item-perms {
+  margin-top: var(--lt-space-xs);
+}
+
+.mod-item-perms small {
+  font-size: var(--lt-font-size-xs);
+  color: var(--lt-fg-tertiary);
+  font-style: italic;
+}
+
+.mod-item-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--lt-space-md);
+  flex-shrink: 0;
+}
+
+.mod-item-error {
+  opacity: 0.7;
+}
+
+.mod-item-error-msg {
+  margin: 0;
+  font-size: var(--lt-font-size-xs);
+  color: var(--lt-error);
+  font-family: monospace;
+}
+
+.mod-empty {
+  color: var(--lt-fg-secondary);
+  font-size: var(--lt-font-size-base);
+  line-height: 1.5;
+}
+
+.mod-empty code {
+  background: var(--lt-bg-hover);
+  padding: 0.1rem 0.3rem;
+  border-radius: var(--lt-radius-sm);
+  font-size: var(--lt-font-size-sm);
+}
+
+.toggle-label {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.toggle-label input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: var(--lt-bg-active);
+  border-radius: var(--lt-radius-full);
+  transition: background var(--lt-transition-fast);
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  width: 16px;
+  height: 16px;
+  background: var(--lt-fg-secondary);
+  border-radius: 50%;
+  transition:
+    transform var(--lt-transition-fast),
+    background var(--lt-transition-fast);
+}
+
+.toggle-label input:checked + .toggle-slider {
+  background: var(--lt-accent);
+}
+
+.toggle-label input:checked + .toggle-slider::before {
+  transform: translateX(16px);
+  background: var(--lt-on-accent);
+}

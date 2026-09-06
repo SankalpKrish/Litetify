@@ -1,0 +1,20 @@
+.home-section-error {
+  padding: var(--lt-space-md);
+  color: var(--lt-error);
+  background: var(--lt-error-bg);
+  border-radius: 8px;
+  font-size: var(--lt-font-size-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--lt-space-sm);
+}
+
+.home-section-error button {
+  background: none;
+  border: none;
+  color: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+  font: inherit;
+  padding: 0;
+}

@@ -1,0 +1,6 @@
+/* PlaylistDetail uses shared global classes:
+   detail-header, detail-image, detail-meta, detail-type, detail-name,
+   detail-desc, detail-stats, detail-action-bar, play-btn, detail-menu-btn,
+   detail-action-spacer, track-table, track-row, track-number, etc.
+   These are shared with AlbumView, ArtistView, PodcastView and remain in global.css.
+   This placeholder module allows future component-specific overrides. */

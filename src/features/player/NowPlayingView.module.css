@@ -1,0 +1,3 @@
+/* NowPlayingView uses inline styles (S object) and shared class names:
+   ctrl-btn, ctrl-active. These are shared with other player components
+   and remain in global.css. */

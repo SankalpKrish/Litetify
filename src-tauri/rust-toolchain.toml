@@ -1,0 +1,5 @@
+# Pin the MSVC toolchain on Windows. The GNU toolchain requires MinGW's
+# dlltool and is not Tauri's supported Windows target. On macOS/Linux rustup
+# resolves the stable host triple normally.
+[toolchain]
+channel = "stable"

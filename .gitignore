@@ -1,0 +1,54 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+package-lock.json
+
+# Build output
+dist/
+dist-ssr/
+build/
+src-tauri/target/
+src-tauri/src-tauri/
+
+# User-installed mods (local only, never tracked)
+/mods/*
+!/mods/examples/
+
+# Secrets / env
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor / OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Tauri
+src-tauri/gen/
+src-tauri/WixTools/
+
+# Planning / workflow artifacts
+.planning/
+
+# Misc
+*.local
+nul
+screenshots/
+coverage/
+.cache/

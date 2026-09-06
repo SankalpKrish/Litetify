@@ -1,0 +1,75 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Litetify",
+  "version": "1.0.0",
+  "identifier": "com.litetify.app",
+  "build": {
+    "beforeDevCommand": "bun dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "bun run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Litetify",
+        "width": 1100,
+        "height": 720,
+        "minWidth": 720,
+        "minHeight": 480,
+        "resizable": true,
+        "fullscreen": false
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; img-src 'self' data: https://*.scdn.co https://*.spotifycdn.com; connect-src 'self' https://api.spotify.com https://accounts.spotify.com https://*.spotify.com wss://*.spotify.com https://*.scdn.co https://*.spotifycdn.com ipc: http://ipc.localhost; script-src 'self' blob: https://sdk.scdn.co; style-src 'self' 'unsafe-inline'; frame-src 'self' https://sdk.scdn.co https://*.spotify.com; media-src 'self' blob: https://*.scdn.co; worker-src 'self' blob:"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "publisher": "Litetify",
+    "copyright": "Copyright © Litetify",
+    "homepage": "https://github.com/SankalpKrish/Litetify",
+    "category": "Music",
+    "shortDescription": "A lightweight, performant, moddable Spotify Premium desktop client.",
+    "longDescription": "Litetify is a lightweight, performant, moddable Spotify Premium desktop client.",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "windows": {
+      "nsis": {
+        "installerIcon": "windows/installer/installer.ico",
+        "uninstallerIcon": "windows/installer/installer.ico",
+        "headerImage": "windows/installer/nsis-header.bmp",
+        "sidebarImage": "windows/installer/nsis-sidebar.bmp",
+        "uninstallerHeaderImage": "windows/installer/nsis-header.bmp",
+        "installerHooks": "windows/hooks.nsh"
+      },
+      "wix": {
+        "upgradeCode": "64c3febf-3d09-5907-939c-1e77dc755fe4",
+        "bannerPath": "windows/installer/wix-banner.bmp",
+        "dialogImagePath": "windows/installer/wix-dialog.bmp",
+        "fragmentPaths": ["windows/fragments/cleanup.wxs"],
+        "componentRefs": ["CleanupInstallDirLeftovers"]
+      }
+    }
+  },
+  "plugins": {
+    "updater": {
+      "active": true,
+      "dialog": true,
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDJBNTExRDBGNTA4RTFEQ0QKUldUTkhZNVFEeDFSS3F3eTBHWVNaUEI0N1RObVBYbWdGMHNxcktFbkxIZ0VidDVBRjhubC9HWlAK",
+      "endpoints": [
+        "https://github.com/SankalpKrish/Litetify/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
+    }
+  }
+}

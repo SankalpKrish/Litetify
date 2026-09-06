@@ -1,0 +1,18 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "ignore": [
+    "mods/examples/**",
+    "mods/stats-app/**",
+    "src/lib/types.ts",
+    "src/lib/types.generated.ts",
+    "src/lib/queries/__tests__/*",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "src/mods/loader.ts",
+    "src/mods/sandbox.ts",
+    "src/mods/manifest.ts",
+    "src/playback/websdk.ts",
+    "src/lib/offline.ts"
+  ],
+  "ignoreDependencies": []
+}

@@ -1,0 +1,5 @@
+/* ArtistView uses shared global classes:
+   detail-header, detail-image, detail-image-round, detail-meta, detail-type,
+   detail-name, detail-stats, detail-action-bar, play-btn, section-header,
+   section-title, track-table, track-row, track-number, etc.
+   These are shared with other detail views and remain in global.css. */

@@ -1,0 +1,5 @@
+/* TrackRow uses shared global classes:
+   track-row, track-number, track-number-static, track-number-play,
+   track-info, track-name, track-explicit, track-artist, track-artist-link,
+   track-album, track-duration, track-duration-text, track-save-btn.
+   These are shared with AlbumView, PlaylistDetail, SearchView, etc. and remain in global.css. */

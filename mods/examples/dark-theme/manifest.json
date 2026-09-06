@@ -1,0 +1,9 @@
+{
+  "name": "Deep Dark",
+  "version": "1.0.0",
+  "type": "theme",
+  "entry": "theme.css",
+  "description": "A deeper, higher-contrast dark theme with blue accents.",
+  "author": "Litetify",
+  "litetifyApiVersion": "1.0.0"
+}

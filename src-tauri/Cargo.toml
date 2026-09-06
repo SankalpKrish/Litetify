@@ -1,0 +1,52 @@
+[package]
+name = "litetify"
+version = "1.0.0"
+description = "A lightweight, performant, moddable Spotify Premium desktop client."
+authors = ["Litetify"]
+homepage = "https://github.com/SankalpKrish/Litetify"
+edition = "2021"
+rust-version = "1.77.2"
+
+# See more keys and their definitions at
+# https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+name = "litetify_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-opener = "2"
+open = "5"
+tauri-plugin-updater = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+reqwest = { version = "0.12", features = ["json"] }
+sha2 = "0.10"
+base64 = "0.22"
+tiny_http = "0.12"
+keyring = "2"
+rand = "0.8"
+url = "2"
+chrono = { version = "0.4", features = ["serde"] }
+tokio = { version = "1", features = ["sync", "rt", "rt-multi-thread", "macros"] }
+typeshare = { version = "1.0.5", default-features = false }
+log = "0.4"
+env_logger = "0.11"
+
+[dev-dependencies]
+mockito = "1"
+
+[features]
+# librespot native-audio engine is OPT-IN and OFF by default (see plan Phase 6).
+default = []
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true

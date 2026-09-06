@@ -1,0 +1,13 @@
+dist
+node_modules
+src-tauri/target
+src-tauri/gen
+src-tauri/windows
+coverage
+*.lock
+package-lock.json
+Litetify-Feather-Logo
+Litetify-Feather-Logo.zip
+*.wxs
+*.nsh
+.worktrees

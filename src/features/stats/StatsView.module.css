@@ -1,0 +1,4 @@
+/* StatsView uses shared global classes:
+   page-header, page-title, section-header, section-title.
+   All visual styles are applied via inline style objects.
+   These remain in global.css. */

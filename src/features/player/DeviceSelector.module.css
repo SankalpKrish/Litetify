@@ -1,0 +1,105 @@
+.device-selector {
+  position: relative;
+}
+
+.device-dropdown {
+  position: fixed;
+  min-width: 200px;
+  z-index: calc(var(--lt-z-player) + 10);
+  background: var(--lt-bg-elevated);
+  border: 1px solid var(--lt-border);
+  border-radius: var(--lt-radius-lg);
+  padding: var(--lt-space-xs);
+  box-shadow: var(--lt-shadow-lg);
+  animation: context-menu-in 0.08s ease-out;
+}
+
+.device-dropdown-header {
+  padding: var(--lt-space-sm) var(--lt-space-md);
+  font-size: var(--lt-font-size-xs);
+  font-weight: var(--lt-font-weight-semibold);
+  color: var(--lt-fg-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.device-empty {
+  padding: var(--lt-space-md) var(--lt-space-md);
+  font-size: var(--lt-font-size-sm);
+  color: var(--lt-fg-secondary);
+  text-align: center;
+}
+
+.device-item {
+  background: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+  display: flex;
+  align-items: center;
+  gap: var(--lt-space-sm);
+  width: 100%;
+  padding: var(--lt-space-sm) var(--lt-space-md);
+  min-height: 44px;
+  border-radius: var(--lt-radius-sm);
+  font-size: var(--lt-font-size-sm);
+  color: var(--lt-fg-primary);
+  box-sizing: border-box;
+  transition: background var(--lt-transition-fast);
+}
+
+.device-item:hover {
+  background: var(--lt-bg-hover);
+}
+
+.device-active {
+  color: var(--lt-accent);
+}
+
+.device-badge {
+  margin-left: auto;
+  font-size: var(--lt-font-size-xs);
+  color: var(--lt-accent);
+  font-weight: var(--lt-font-weight-semibold);
+}
+
+.device-refresh {
+  background: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+  display: block;
+  width: 100%;
+  padding: var(--lt-space-xs) var(--lt-space-md);
+  text-align: center;
+  font-size: var(--lt-font-size-sm);
+  color: var(--lt-fg-secondary);
+  border-top: 1px solid var(--lt-border);
+  box-sizing: border-box;
+  transition: color var(--lt-transition-fast);
+}
+
+.device-refresh:hover {
+  color: var(--lt-fg-primary);
+}
+
+.device-item-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@keyframes context-menu-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

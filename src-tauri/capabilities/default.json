@@ -1,0 +1,21 @@
+[
+  {
+    "identifier": "default",
+    "description": "Default permissions: auth, API, playback, and mod system.",
+    "windows": ["main"],
+    "permissions": [
+      "core:default",
+      "opener:default",
+      "core:webview:allow-create-webview-window",
+      "core:window:allow-close",
+      "core:window:allow-set-focus",
+      "core:window:allow-center"
+    ]
+  },
+  {
+    "identifier": "mini-player",
+    "description": "Permissions for the detached mini-player window.",
+    "windows": ["mini-player"],
+    "permissions": ["core:default", "core:window:allow-close"]
+  }
+]

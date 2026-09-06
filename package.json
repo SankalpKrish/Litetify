@@ -1,0 +1,66 @@
+{
+  "name": "litetify",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "A lightweight, performant, moddable Spotify Premium desktop client.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20",
+    "bun": ">=1.3"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "tauri": "tauri",
+    "lint": "eslint . --max-warnings 0",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:rust": "cargo test --manifest-path src-tauri/Cargo.toml",
+    "types:generate": "typeshare src-tauri/src/ --lang=typescript --output-file=src/lib/types.generated.ts",
+    "types:check": "npm run types:generate && git diff --exit-code src/lib/types.generated.ts",
+    "knip": "knip",
+    "spellcheck": "cspell --no-progress ."
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.101.2",
+    "@tauri-apps/api": "^2.11.1",
+    "@tauri-apps/plugin-opener": "^2.5.4",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "zod": "^4.4.3",
+    "zustand": "^5.0.14"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.4",
+    "@tauri-apps/cli": "^2.11.4",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^26.1.1",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^4.7.0",
+    "cspell": "^10.0.1",
+    "eslint": "^9.39.4",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.26",
+    "globals": "^16.5.0",
+    "jsdom": "^29.1.1",
+    "knip": "^6.25.0",
+    "prettier": "^3.9.4",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.63.0",
+    "vite": "^6.4.3",
+    "vitest": "^3.2.7"
+  },
+  "allowScripts": {
+    "esbuild@0.25.12": true
+  },
+  "trustedDependencies": [
+    "esbuild"
+  ]
+}

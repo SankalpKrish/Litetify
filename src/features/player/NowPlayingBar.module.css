@@ -1,0 +1,68 @@
+.player-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--lt-player-height);
+  background: color-mix(in srgb, var(--lt-bg-base) 95%, transparent);
+  border-top: 1px solid var(--lt-border);
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  grid-template-rows: var(--lt-player-height);
+  align-items: center;
+  padding: 0 var(--lt-space-lg);
+  gap: var(--lt-space-md);
+  backdrop-filter: blur(6px);
+  will-change: opacity;
+  z-index: var(--lt-z-player);
+  overflow-x: clip;
+  overflow-y: visible;
+}
+
+.player-bar-left {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.player-bar-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--lt-space-xs);
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.player-bar-right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1px;
+  min-width: 0;
+  overflow-x: clip;
+  overflow-y: visible;
+}
+
+/* Tighter button sizing in the right section */
+.player-bar-right :global(.ctrl-btn) {
+  width: 28px;
+  height: 28px;
+  min-height: 28px;
+}
+
+@media (max-width: 768px) {
+  .player-bar {
+    left: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .player-bar {
+    grid-template-columns: 1fr;
+    padding: var(--lt-space-sm) var(--lt-space-md);
+  }
+}

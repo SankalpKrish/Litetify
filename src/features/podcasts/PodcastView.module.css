@@ -1,0 +1,4 @@
+/* PodcastView uses shared global classes:
+   detail-header, detail-image, detail-meta, detail-type, detail-name,
+   detail-desc, detail-stats, track-table, track-row, track-number, etc.
+   These are shared with other detail views and remain in global.css. */
