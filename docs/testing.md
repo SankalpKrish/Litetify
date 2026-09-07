@@ -4,11 +4,11 @@
 
 Litetify follows a pragmatic, layered testing strategy:
 
-- **Test behavior, not implementation** — focus on what the code does, not internal details.
-- **Co-locate tests with code** — `__tests__` directories sit next to the modules they test.
-- **Mock at module boundaries** — mock Tauri APIs, HTTP clients, and external stores; test business logic in isolation.
-- **Parallelism matters** — Rust tests use mutexes to avoid keyring contention; Vitest runs frontend tests in parallel by default.
-- **Gates, not gates that block unreasonably** — lint, typecheck, and test jobs must pass before a build can merge. Code quality diagnostics (knip, cspell, cargo-udeps) are informational and allowed to fail.
+- **Test behavior, not implementation** - focus on what the code does, not internal details.
+- **Co-locate tests with code** - `__tests__` directories sit next to the modules they test.
+- **Mock at module boundaries** - mock Tauri APIs, HTTP clients, and external stores; test business logic in isolation.
+- **Parallelism matters** - Rust tests use mutexes to avoid keyring contention; Vitest runs frontend tests in parallel by default.
+- **Gates, not gates that block unreasonably** - lint, typecheck, and test jobs must pass before a build can merge. Code quality diagnostics (knip, cspell, cargo-udeps) are informational and allowed to fail.
 
 ---
 
@@ -39,15 +39,15 @@ test: {
 
 The setup file (`src/test-setup.ts`) provides browser API mocks:
 
-- **`matchMedia`** — stub that matches nothing, used by components with media queries.
-- **`IntersectionObserver`** — no-op mock for components using intersection observation.
-- **`requestAnimationFrame` / `cancelAnimationFrame`** — backed by `setTimeout`/`clearTimeout` so rAF-based animations can be tested without a real frame loop. Cleaned up after each test via `afterEach`.
+- **`matchMedia`** - stub that matches nothing, used by components with media queries.
+- **`IntersectionObserver`** - no-op mock for components using intersection observation.
+- **`requestAnimationFrame` / `cancelAnimationFrame`** - backed by `setTimeout`/`clearTimeout` so rAF-based animations can be tested without a real frame loop. Cleaned up after each test via `afterEach`.
 
 ### Test Types
 
 #### Component Tests
 
-Located in `src/__tests__/` — render a component, query rendered output, and simulate interaction.
+Located in `src/__tests__/` - render a component, query rendered output, and simulate interaction.
 
 **Example pattern** (`TransportControls.test.tsx`):
 
@@ -86,10 +86,15 @@ describe('TransportControls', () => {
 - `src/__tests__/ProgressBar.test.tsx`
 - `src/__tests__/TransportControls.test.tsx`
 - `src/__tests__/VolumeControl.test.tsx`
+- `src/__tests__/PinnedList.test.tsx`
+- `src/__tests__/LogoMark.test.tsx`
+- `src/__tests__/BrandSpinner.test.tsx`
+- `src/__tests__/boot.test.ts`
+- `src/__tests__/modsStore.test.ts`
 
 #### Query Hook Tests
 
-Located in `src/lib/queries/__tests__/` — test React Query hooks in isolation using `renderHook` from `@testing-library/react`.
+Located in `src/lib/queries/__tests__/` - test React Query hooks in isolation using `renderHook` from `@testing-library/react`.
 
 **Example pattern** (`useAlbum.test.tsx`):
 
@@ -143,7 +148,7 @@ describe('useAlbum', () => {
 
 #### Store Tests
 
-Located next to the store module (`src/features/player/__tests__/playerStore.test.ts`) — test Zustand store state mutations and interactions directly.
+Located next to the store module (`src/features/player/__tests__/playerStore.test.ts`) - test Zustand store state mutations and interactions directly.
 
 **Example pattern** (`playerStore.test.ts`):
 
@@ -174,6 +179,8 @@ describe('playerStore', () => {
 **Existing store tests:**
 
 - `src/features/player/__tests__/playerStore.test.ts`
+- `src/features/pins/__tests__/pinsStore.test.ts`
+- `src/features/pins/__tests__/reorder.test.ts`
 
 #### Smoke Test
 
@@ -300,8 +307,7 @@ All test commands are defined in `package.json` and run via `bun`.
 ### Frontend Tests
 
 ```bash
-bun test
-# or: bun run test
+bun run test
 ```
 
 Runs Vitest in run mode (single pass, no watch). All `*.test.ts*` files under `src/` are picked up automatically.
@@ -328,7 +334,7 @@ Runs `tsc --noEmit` to verify TypeScript types without producing output files. T
 bun run lint
 ```
 
-Runs ESLint across the entire `src/` directory with `--max-warnings 0` — any warning or error fails the run.
+Runs ESLint across the entire `src/` directory with `--max-warnings 0` - any warning or error fails the run.
 
 ### Additional Diagnostics
 
@@ -351,11 +357,20 @@ src/
 │   ├── LoginScreen.test.tsx
 │   ├── ProgressBar.test.tsx
 │   ├── TransportControls.test.tsx
-│   └── VolumeControl.test.tsx
+│   ├── VolumeControl.test.tsx
+│   ├── PinnedList.test.tsx
+│   ├── LogoMark.test.tsx
+│   ├── BrandSpinner.test.tsx
+│   ├── boot.test.ts
+│   └── modsStore.test.ts
 ├── features/
-│   └── player/
+│   ├── player/
+│   │   └── __tests__/
+│   │       └── playerStore.test.ts                  # Store tests
+│   └── pins/
 │       └── __tests__/
-│           └── playerStore.test.ts                  # Store tests
+│           ├── pinsStore.test.ts
+│           └── reorder.test.ts
 └── lib/
     └── queries/
         └── __tests__/
@@ -410,7 +425,7 @@ const { result } = renderHook(() => useMyHook(), { wrapper });
 
 ### GitHub Actions (`ci.yml`)
 
-Every push and pull request to `master` triggers the CI pipeline with these jobs:
+Every push and pull request to `main` triggers the CI pipeline with these jobs:
 
 | Job         | Command                         | What it verifies                                            |
 | ----------- | ------------------------------- | ----------------------------------------------------------- |
@@ -432,7 +447,7 @@ The `test` job runs Rust tests through `dbus-run-session` with a pre-unlocked `g
 
 ### PR Requirements
 
-Before merging to `master`:
+Before merging to `main`:
 
 1. The `lint`, `format`, `typecheck`, `test`, and `build` jobs must all pass.
 2. Security audit and pre-release gates should be clean (pre-release gates fail on dev-mode remnants).
@@ -443,11 +458,11 @@ Before merging to `master`:
 
 ### General Guidelines
 
-- **One `describe` block per component/hook/function** — use nested `describe` for method grouping when helpful.
-- **Reset state in `beforeEach`** — clear mocks (`vi.clearAllMocks()`), reset stores (`usePlayerStore.setState(usePlayerStore.getInitialState(), true)`), restore console spies (`vi.restoreAllMocks()`).
-- **Use `userEvent` over `fireEvent`** — `userEvent` produces more realistic interaction sequences (focus, blur, keyboard events).
-- **Prefer `screen.getByRole`, `getByLabelText`, `getByText`** — avoid test IDs unless the element has no semantic role or accessible label.
-- **Async assertions use `waitFor` or `findBy*` queries** — never use bare timeouts (`setTimeout` / `sleep`).
+- **One `describe` block per component/hook/function** - use nested `describe` for method grouping when helpful.
+- **Reset state in `beforeEach`** - clear mocks (`vi.clearAllMocks()`), reset stores (`usePlayerStore.setState(usePlayerStore.getInitialState(), true)`), restore console spies (`vi.restoreAllMocks()`).
+- **Use `userEvent` over `fireEvent`** - `userEvent` produces more realistic interaction sequences (focus, blur, keyboard events).
+- **Prefer `screen.getByRole`, `getByLabelText`, `getByText`** - avoid test IDs unless the element has no semantic role or accessible label.
+- **Async assertions use `waitFor` or `findBy*` queries** - never use bare timeouts (`setTimeout` / `sleep`).
 
 ### Patterns by Test Type
 
@@ -596,6 +611,6 @@ mod tests {
 1. Create `__tests__/` next to the source module (if it doesn't exist).
 2. Create a test file following the naming convention: `{moduleName}.test.tsx` for frontend.
 3. Import dependencies following the existing patterns above.
-4. Run `bun test` to verify the new test passes.
+4. Run `bun run test` to verify the new test passes.
 5. For Rust tests, add a `#[cfg(test)] mod tests { ... }` block inline in the source file.
 6. Run `bun run test:rust` to verify Rust tests pass.

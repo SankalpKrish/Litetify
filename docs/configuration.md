@@ -18,7 +18,7 @@ The root configuration for the Tauri v2 desktop shell. References the
 ```json
 {
   "productName": "Litetify",
-  "version": "0.4.0",
+  "version": "1.0.0",
   "identifier": "com.litetify.app"
 }
 ```
@@ -31,9 +31,9 @@ channel management.
 ```json
 {
   "build": {
-    "beforeDevCommand": "npm run dev",
+    "beforeDevCommand": "bun dev",
     "devUrl": "http://localhost:1420",
-    "beforeBuildCommand": "npm run build",
+    "beforeBuildCommand": "bun run build",
     "frontendDist": "../dist"
   }
 }
@@ -148,7 +148,7 @@ page. On Windows the installer runs in passive mode (no interactive prompts).
 **File:** `.env.example`
 
 ```env
-# Spotify application Client ID (public — safe to expose in a desktop app).
+# Spotify application Client ID (public - safe to expose in a desktop app).
 VITE_SPOTIFY_CLIENT_ID=
 
 # Loopback redirect the app listens on. Must EXACTLY match a redirect URI
@@ -212,7 +212,7 @@ Defaults:
 
 ### Tauri Commands
 
-Three commands are exposed to the frontend via `#[tauri::command]`:
+Three commands are defined in `src-tauri/src/config.rs` via `#[tauri::command]`:
 
 | Command        | Signature                                      | Description                    |
 | -------------- | ---------------------------------------------- | ------------------------------ |
@@ -220,11 +220,19 @@ Three commands are exposed to the frontend via `#[tauri::command]`:
 | `set_config`   | `async fn(AppHandle, config: LitetifyConfig) ` | Persist a full config object.  |
 | `reset_config` | `async fn(AppHandle) -> LitetifyConfig`        | Reset to defaults and persist. |
 
+Note: in v1.0.0 these handlers are defined but not registered in
+`src-tauri/src/lib.rs` `generate_handler!`, so they are not invocable
+from the frontend until registered. The frontend `src/lib/config.ts`
+client calls `get_config`, `set_config`, and `reset_config` and falls
+back to local defaults when invocation fails.
+
 ### Frontend Client
 
 **File:** `src/lib/config.ts`
 
-Provides a typed client with an in-memory sync cache:
+Provides a typed client with an in-memory sync cache. The module exports
+both standalone functions and a `config` namespace object with the same
+members:
 
 | Export               | Description                                                |
 | -------------------- | ---------------------------------------------------------- |
@@ -234,6 +242,11 @@ Provides a typed client with an in-memory sync cache:
 | `config.save()`      | Replace the entire config in cache and store.              |
 | `config.update()`    | Partial merge into cache and store.                        |
 | `config.reset()`     | Reset to factory defaults.                                 |
+
+The frontend `LitetifyConfig` interface adds `sidebarWidth: number`
+(default `240`), which has no counterpart in the Rust `LitetifyConfig`
+struct in v1.0.0. The frontend interface is hand-maintained in
+`src/lib/config.ts` and is not generated from Rust via `typeshare`.
 
 ---
 
@@ -349,6 +362,7 @@ changes are handled by Cargo.
 | ---------------- | ------------------------------------------------- |
 | `dev`            | `vite`                                            |
 | `build`          | `tsc --noEmit && vite build`                      |
+| `preview`        | `vite preview`                                    |
 | `tauri`          | `tauri` (CLI passthrough)                         |
 | `lint`           | `eslint . --max-warnings 0`                       |
 | `format`         | `prettier --write .`                              |
@@ -357,6 +371,7 @@ changes are handled by Cargo.
 | `test`           | `vitest run`                                      |
 | `test:rust`      | `cargo test --manifest-path src-tauri/Cargo.toml` |
 | `types:generate` | `typeshare src-tauri/src/ --lang=typescript ...`  |
+| `types:check`    | `npm run types:generate && git diff --exit-code src/lib/types.generated.ts` |
 | `knip`           | `knip`                                            |
 | `spellcheck`     | `cspell --no-progress .`                          |
 
@@ -366,18 +381,20 @@ Node engine requirements: `>=20`. Bun engine: `>=1.3`.
 
 **File:** `src-tauri/Cargo.toml`
 
-| Section            | Key entries                                                                                                                                                                                                                                                               |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Package metadata   | `name = "litetify"`, `version = "0.4.0"`, `edition = "2021"`, `rust-version = "1.77.2"`                                                                                                                                                                                   |
-| Library targets    | `staticlib`, `cdylib`, `rlib`                                                                                                                                                                                                                                             |
-| Build dependencies | `tauri-build 2`, `vergen 9.0.6` (optional)                                                                                                                                                                                                                                |
-| Dependencies       | `tauri 2`, `tauri-plugin-opener 2`, `open 5`, `tauri-plugin-updater 2`, `serde 1`, `serde_json 1`, `reqwest 0.12`, `sha2 0.10`, `base64 0.22`, `tiny_http 0.12`, `keyring 2`, `rand 0.8`, `url 2`, `chrono 0.4`, `tokio 1`, `librespot 0.8` (optional), `typeshare 1.0.5` |
-| Dev dependencies   | `mockito 1`                                                                                                                                                                                                                                                               |
-| Features           | `default = []`, `librespot = ["dep:librespot", "dep:vergen"]`                                                                                                                                                                                                             |
+| Section            | Key entries                                                                                                                                                                                                                        |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Package metadata   | `name = "litetify"`, `version = "1.0.0"`, `edition = "2021"`, `rust-version = "1.77.2"`                                                                                                                                            |
+| Library targets    | `staticlib`, `cdylib`, `rlib`                                                                                                                                                                                                      |
+| Build dependencies | `tauri-build 2`                                                                                                                                                                                                                    |
+| Dependencies       | `tauri 2`, `tauri-plugin-opener 2`, `open 5`, `tauri-plugin-updater 2`, `serde 1`, `serde_json 1`, `reqwest 0.12`, `sha2 0.10`, `base64 0.22`, `tiny_http 0.12`, `keyring 2`, `rand 0.8`, `url 2`, `chrono 0.4`, `tokio 1`, `typeshare 1.0.5`, `log 0.4`, `env_logger 0.11` |
+| Dev dependencies   | `mockito 1`                                                                                                                                                                                                                        |
+| Features           | `default = []`                                                                                                                                                                                                                     |
 
-The `librespot` feature is opt-in. When disabled (the default), playback
-uses the Spotify Web Playback SDK exclusively. Enabling it compiles
-librespot with the rodio audio backend and rustls TLS.
+In v1.0.0 the Rust backend ships the Web Playback SDK engine only.
+There is no `librespot` dependency and no `librespot` Cargo feature.
+The `engine_type` config value still accepts `"websdk"` or `"librespot"`,
+and the frontend retains a librespot selector, but the Rust
+`playback::librespot` module is not present in this release.
 
 ### Build Script
 
@@ -385,6 +402,7 @@ librespot with the rodio audio backend and rustls TLS.
 
 ```rust
 fn main() {
+    println!("cargo:rerun-if-changed=icons/icon.ico");
     tauri_build::build()
 }
 ```
@@ -454,7 +472,7 @@ max_width = 100
 
 **File:** `.github/workflows/ci.yml`
 
-Runs on every push or pull request to the `master` branch. Uses concurrency
+Runs on every push or pull request to the `main` branch. Uses concurrency
 cancellation: in-progress runs on the same ref are cancelled.
 
 <!-- VERIFY: CI runners are GitHub-hosted ubuntu-latest instances. -->
@@ -490,7 +508,7 @@ Linux system dependencies (installed via apt): `libwebkit2gtk-4.1-dev`,
 
 **File:** `.github/workflows/release.yml`
 
-Triggered on tag push matching `v*` (e.g., `v0.4.0`).
+Triggered on tag push matching `v*` (e.g., `v1.0.0`).
 
 <!-- VERIFY: Release artifacts are built on GitHub-hosted runners for all three platforms. -->
 
@@ -507,7 +525,7 @@ The pipeline:
    - `macos-latest` (macOS, `x86_64-apple-darwin`)
    - `windows-latest` (Windows, `x86_64-pc-windows-msvc`)
 
-   Uses `tauri-apps/tauri-action@v0` to build and upload artifacts. Creates
+   Uses `tauri-apps/tauri-action@v1` to build and upload artifacts. Creates
    a draft GitHub Release with platform-specific installers (`.msi`/`.exe`
    for Windows, `.dmg` for macOS, `.deb`/`.AppImage` for Linux).
 
@@ -660,9 +678,8 @@ Settings are applied in the following order (later overrides earlier):
 
 1. Add the field to `LitetifyConfig` in `src-tauri/src/config.rs` with a
    sensible default in the `Default` impl.
-2. Regenerate the TypeScript types: `bun run types:generate`.
-3. Wire the field into the frontend config client at `src/lib/config.ts`
-   (the frontend interface mirrors the Rust struct automatically via
-   `typeshare`).
-4. (Optional) Add a UI control in the settings views under
+2. Add the matching camelCase field to `LitetifyConfig` and `DEFAULTS` in
+   `src/lib/config.ts` by hand (`config.rs` has no `#[typeshare]`
+   annotation, so `bun run types:generate` does not cover config types).
+3. (Optional) Add a UI control in the settings views under
    `src/features/settings/`.

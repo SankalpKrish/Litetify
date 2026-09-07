@@ -209,19 +209,10 @@ Output is written to `src-tauri/target/release/bundle/`:
 | macOS    | `.dmg`               |
 | Linux    | `.deb` / `.AppImage` |
 
-### Building with librespot
-
-By default, Litetify uses the Spotify Web Playback SDK for audio. To enable the native librespot engine:
-
-```bash
-cd src-tauri
-cargo build --features librespot
-cd ..
-bun run tauri build
-```
-
 ### Build Notes
 
+- v1.0.0 uses the Spotify Web Playback SDK for audio. There is no
+  librespot build in this release.
 - The Rust release profile optimizes for binary size (`opt-level = "s"`, `lto = true`, `strip = true`, `panic = "abort"`).
 - First production build may take several minutes as Cargo compiles dependencies from scratch.
 

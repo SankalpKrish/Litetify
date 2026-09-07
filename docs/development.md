@@ -53,19 +53,18 @@ cargo test --manifest-path src-tauri/Cargo.toml   # Rust tests
 ```
 Litetify/
 ├── src/                       # React/TypeScript frontend
-│   ├── app/                   # App shell (Sidebar, layout, theme provider)
+│   ├── app/                   # App shell (Sidebar, PinnedList)
 │   ├── features/              # Feature-scoped modules
 │   │   ├── auth/              # Login screen, auth store (Zustand)
-│   │   ├── player/            # All player UI, stores, playback integration
-│   │   ├── library/           # Playlists, albums, artists, liked songs
+│   │   ├── player/            # Player UI, stores, crossfade, sleep timer, miniplayer, auto-queue
+│   │   ├── library/           # Playlists, albums, artists, liked songs, LibraryView
 │   │   ├── search/            # Tabbed search (tracks, artists, albums, playlists)
 │   │   ├── browse/            # Home feed, personalised recommendations
-│   │   ├── settings/          # Settings panels, mod management
+│   │   ├── settings/          # SettingsView, Mods, Playback, EqualizerSettings, Permissions
 │   │   ├── contextmenu/       # Right-click context menu
-│   │   ├── pins/              # Pinned sidebar items
+│   │   ├── pins/              # Pinned sidebar items (store + reorder helpers)
 │   │   ├── podcasts/          # Show and episode browsing
-│   │   ├── stats/             # Personal listening statistics
-│   │   └── player/            # Player components, stores, crossfade, sleep timer, miniplayer
+│   │   └── stats/             # Personal listening statistics
 │   ├── lib/                   # Shared utilities
 │   │   ├── api.ts             # Tauri IPC wrapper for all Rust commands
 │   │   ├── config.ts          # Typed config client with in-memory sync cache
@@ -74,17 +73,17 @@ Litetify/
 │   │   ├── queries/           # @tanstack/react-query hooks
 │   │   │   ├── queryClient.ts # Shared QueryClient configuration
 │   │   │   ├── useHome.ts     # Home feed data
+│   │   │   ├── useBrowse.ts   # Browse/discover sections
 │   │   │   ├── usePlayer.ts   # Currently playing state
-│   │   │   └── ...            # Per-resource query hooks
+│   │   │   └── ...            # Per-resource query hooks (useMe, useAlbum, useArtist, useSearch, useShows, etc.)
 │   │   ├── utils.ts           # Formatting helpers (duration, numbers, dates)
 │   │   ├── ViewState.tsx      # URL-less view routing via Zustand
-│   │   ├── keybindings.ts     # Keyboard shortcut definitions
-│   │   ├── useKeyboardShortcuts.ts # Keyboard shortcut registration hook
 │   │   ├── debug.ts           # Debug utilities (dev only)
-│   │   └── offline.ts         # Offline connectivity state
+│   │   ├── offline.ts         # Offline connectivity state
+│   │   └── ErrorBoundary.tsx  # Error boundary component
 │   ├── playback/              # Frontend playback engine interface
-│   │   ├── websdk.ts          # Web Playback SDK adapter
-│   │   ├── librespot.ts       # Librespot adapter (Rust IPC bridge)
+│   │   ├── engine.ts          # PlaybackEngine interface
+│   │   ├── websdk.ts          # Web Playback SDK adapter (478 lines)
 │   │   └── miniplayerEvents.ts # Mini-player IPC events
 │   ├── mods/                  # Mod runtime
 │   │   ├── loader.ts          # Scanning, loading, enabling/disabling mods
@@ -94,6 +93,8 @@ Litetify/
 │   │   ├── apps.tsx           # Custom app rendering (sidebar tabs)
 │   │   ├── api.ts             # window.Litetify API bridge for extensions
 │   │   ├── store.ts           # Zustand store for mod state
+│   │   ├── permissions.ts     # Permission filtering for mod API
+│   │   ├── components.tsx     # Reusable mod UI components
 │   │   └── index.ts           # Public API barrel export
 │   ├── styles/                # Global styles and design tokens
 │   │   ├── tokens.css         # 72+ CSS custom property design tokens
@@ -123,10 +124,9 @@ Litetify/
 │   │   │   ├── pkce.rs        # Code challenge / verifier generation
 │   │   │   ├── server.rs      # Local HTTP callback server
 │   │   │   └── tokens.rs      # OS keychain token storage (keyring crate)
-│   │   ├── playback/          # Playback engine trait and adapters
+│   │   ├── playback/          # Playback engine trait and WebSDK adapter
 │   │   │   ├── mod.rs         # PlaybackEngine trait, RepeatMode, PlaybackState
-│   │   │   ├── websdk.rs      # Web SDK engine commands
-│   │   │   └── librespot.rs   # Native audio engine (feature-gated)
+│   │   │   └── websdk.rs      # Web SDK engine commands
 │   │   └── mods/              # Mod filesystem access
 │   │       └── mod.rs         # Mod scanning, manifest validation, file reading
 │   ├── Cargo.toml
@@ -221,7 +221,7 @@ custom properties covering color, typography, spacing, and elevation. Themes
 override these tokens to change the entire appearance.
 
 ```css
-/* Consumer — use tokens everywhere */
+/* Consumer - use tokens everywhere */
 color: var(--color-text-primary);
 background: var(--color-surface);
 font: var(--font-body);
@@ -238,13 +238,13 @@ font: var(--font-body);
 
 ### Key Modules
 
-- **`src/lib/api.ts`** — Typed wrapper around `@tauri-apps/api/core`'s
+- **`src/lib/api.ts`** - Typed wrapper around `@tauri-apps/api/core`'s
   `invoke()`. Every Tauri command is called through this module.
-- **`src/lib/queries/`** — Per-resource React Query hooks with retry, caching,
+- **`src/lib/queries/`** - Per-resource React Query hooks with retry, caching,
   and stale-time configuration.
-- **`src/features/auth/authStore.ts`** — Zustand store managing auth state,
+- **`src/features/auth/authStore.ts`** - Zustand store managing auth state,
   token lifecycle, and Spotify Client ID.
-- **`src/features/player/playerStore.ts`** — Zustand store for playback
+- **`src/features/player/playerStore.ts`** - Zustand store for playback
   state, volume, shuffle, and repeat.
 
 ---
@@ -255,33 +255,21 @@ font: var(--font-body);
 
 The Rust backend runs in Tauri's privileged process and handles:
 
-- **Auth** — PKCE OAuth flow, callback server, OS keychain token storage
-- **API proxy** — All Spotify Web API calls go through Rust-side `#[tauri::command]` functions, not the browser
-- **Playback** — Engine abstraction trait with Web SDK (default) and librespot (opt-in) adapters
-- **Mod filesystem** — Safe file reads for mod manifests and entry files
+- **Auth** - PKCE OAuth flow, callback server, OS keychain token storage
+- **API proxy** - All Spotify Web API calls go through Rust-side `#[tauri::command]` functions, not the browser
+- **Playback** - WebSDK engine commands relayed to the frontend via Tauri events
+- **Mod filesystem** - Safe file reads for mod manifests and entry files
 
 ### Cargo Features
-
-Two feature sets control the playback engine:
 
 ```toml
 [features]
 default = []
-librespot = ["dep:librespot", "dep:vergen"]
 ```
 
-**Default build** — Web Playback SDK engine only, the app controls Spotify
+**v1.0.0 build** - Web Playback SDK engine only, the app controls Spotify
 playback through the Spotify Web API (play, pause, seek, etc.) via the
-browser's Web SDK.
-
-**Librespot build** — Compiles native audio playback using `librespot`
-(rodio audio backend, rustls TLS). Enable with:
-
-```bash
-cd src-tauri && cargo build --features librespot
-# Or
-bun run tauri build  # after setting features in Cargo.toml
-```
+browser's Web SDK. There is no `librespot` Cargo feature in this release.
 
 ### Tauri Commands
 
@@ -312,17 +300,17 @@ All Rust-to-frontend IPC is defined in `src-tauri/src/lib.rs` via the
 
 Command categories:
 
-| Module      | Commands                                                          | Purpose           |
-| ----------- | ----------------------------------------------------------------- | ----------------- |
-| `auth/`     | `login`, `logout`, `check_auth`, `get_valid_token`, `get_profile` | OAuth lifecycle   |
-| `api/`      | `api_get_me`, `api_search`, `api_play`, `api_pause`, ...          | Spotify API proxy |
-| `playback/` | `engine_play`, `engine_seek`, `init_librespot`, ...               | Playback control  |
-| `mods/`     | `scan_mods`, `read_mod_file`, `get_mods_path`, `open_mods_folder` | Mod filesystem    |
+| Module      | Commands                                                                          | Purpose           |
+| ----------- | --------------------------------------------------------------------------------- | ----------------- |
+| `auth/`     | `login`, `logout`, `check_auth`, `get_valid_token`, `get_profile`                 | OAuth lifecycle   |
+| `api/`      | `api_get_me`, `api_search`, `api_play`, `api_pause`, ...                          | Spotify API proxy |
+| `playback/` | `engine_play`, `engine_seek`, `engine_pause`, `engine_resume`, ... (websdk only)  | Playback control  |
+| `mods/`     | `scan_mods`, `read_mod_file`, `get_mods_path`, `open_mods_folder`, `open_path`    | Mod filesystem    |
 
 ### The PlaybackEngine Trait
 
-Defined in `src-tauri/src/playback/mod.rs`, this trait abstracts over both
-the Web SDK and librespot engine:
+Defined in `src-tauri/src/playback/mod.rs`, this trait abstracts the
+WebSDK engine:
 
 ```rust
 pub trait PlaybackEngine: Send + Sync {
@@ -407,8 +395,8 @@ bun run typecheck          # tsc --noEmit
 
 Key compiler settings (`tsconfig.json`):
 
-- `strict: true` — full strict mode
-- `noUnusedLocals` / `noUnusedParameters` — errors on dead code
+- `strict: true` - full strict mode
+- `noUnusedLocals` / `noUnusedParameters` - errors on dead code
 - Path alias `@/*` → `src/*`
 - `target: ES2022`, `module: ESNext`, `moduleResolution: bundler`
 - `skipLibCheck: true` for faster compilation
@@ -495,11 +483,23 @@ short `gcTime`.
 
 ```
 src/__tests__/                            # Component tests
+  Boot.test.ts (boot.test.ts)
+  BrandSpinner.test.tsx
+  ErrorBoundary.test.tsx
+  LoginScreen.test.tsx
+  LogoMark.test.tsx
+  modsStore.test.ts
+  PinnedList.test.tsx
+  ProgressBar.test.tsx
   TransportControls.test.tsx
   VolumeControl.test.tsx
 
 src/features/player/__tests__/            # Store tests
   playerStore.test.ts
+
+src/features/pins/__tests__/              # Pins store tests
+  pinsStore.test.ts
+  reorder.test.ts
 
 src/lib/queries/__tests__/                # Query hook tests
   test-utils.tsx                          # Shared test utilities
@@ -641,8 +641,8 @@ types are not regenerated, the pipeline fails.
 
 - `strict: true`, `target: ES2022`, `jsx: "react-jsx"`
 - Path alias `@/*` → `src/*`
-- `noUnusedLocals`, `noUnusedParameters` — errors
-- `noUncheckedSideEffectImports` — extra safety
+- `noUnusedLocals`, `noUnusedParameters` - errors
+- `noUncheckedSideEffectImports` - extra safety
 - `include: ["src", "vite.config.ts"]`
 
 ### Tauri Shell
@@ -651,9 +651,9 @@ types are not regenerated, the pipeline fails.
 
 | Field                      | Value                   | Purpose                                |
 | -------------------------- | ----------------------- | -------------------------------------- |
-| `build.beforeDevCommand`   | `npm run dev`           | Start Vite before Tauri opens webview  |
+| `build.beforeDevCommand`   | `bun dev`               | Start Vite before Tauri opens webview  |
 | `build.devUrl`             | `http://localhost:1420` | Webview URL during development         |
-| `build.beforeBuildCommand` | `npm run build`         | Build frontend before Rust compilation |
+| `build.beforeBuildCommand` | `bun run build`         | Build frontend before Rust compilation |
 | `build.frontendDist`       | `../dist`               | Production frontend path               |
 | `window.width`             | 1100                    | Default window size                    |
 | `window.minWidth`          | 720                     | Minimum window width                   |
@@ -668,15 +668,14 @@ types are not regenerated, the pipeline fails.
 | Rust edition    | 2021, minimum version 1.77.2                                       |
 | Library targets | `staticlib`, `cdylib`, `rlib`                                      |
 | Profile release | `lto = true`, `opt-level = "s"`, `panic = "abort"`, `strip = true` |
-| Features        | `default = []`, `librespot = ["dep:librespot", "dep:vergen"]`      |
+| Features        | `default = []` (no librespot feature in v1.0.0)                    |
 
 ### Build Commands
 
-| Command                                            | What It Does                                 |
-| -------------------------------------------------- | -------------------------------------------- |
-| `bun run build`                                    | `tsc --noEmit && vite build` (frontend only) |
-| `bun run tauri build`                              | Full desktop app build + platform installer  |
-| `cd src-tauri && cargo build --features librespot` | Rust build with librespot                    |
+| Command                   | What It Does                                 |
+| ------------------------- | -------------------------------------------- |
+| `bun run build`           | `tsc --noEmit && vite build` (frontend only) |
+| `bun run tauri build`     | Full desktop app build + platform installer  |
 
 ---
 
@@ -868,7 +867,7 @@ The mod system spans both Rust and TypeScript:
 
 **File:** `.github/workflows/ci.yml`
 
-Runs on every push or pull request to `master`. Cancels in-progress runs for
+Runs on every push or pull request to `main`. Cancels in-progress runs for
 the same ref.
 
 ```yaml
@@ -881,14 +880,14 @@ concurrency:
 
 | Job                 | Tool                        | Dependencies                  | Description                       |
 | ------------------- | --------------------------- | ----------------------------- | --------------------------------- |
-| `lint`              | Clippy (Rust) + ESLint      | —                             | Rust lints + frontend lint        |
-| `format`            | Prettier check              | —                             | Frontend formatting check         |
-| `typecheck`         | `tsc --noEmit`              | —                             | TypeScript type safety            |
-| `test`              | Vitest + Cargo test         | —                             | Frontend + Rust tests             |
+| `lint`              | Clippy (Rust) + ESLint      | -                             | Rust lints + frontend lint        |
+| `format`            | Prettier check              | -                             | Frontend formatting check         |
+| `typecheck`         | `tsc --noEmit`              | -                             | TypeScript type safety            |
+| `test`              | Vitest + Cargo test         | -                             | Frontend + Rust tests             |
 | `build`             | `bun run build`             | lint, format, typecheck, test | Full frontend build               |
-| `pre-release-gates` | grep + typeshare            | —                             | No dev-mode refs, types in sync   |
-| `security-audit`    | `cargo audit`               | —                             | Vulnerability scanning            |
-| `code-quality`      | Knip + cspell + cargo-udeps | —                             | Informational (continue-on-error) |
+| `pre-release-gates` | grep + typeshare            | -                             | No dev-mode refs, types in sync   |
+| `security-audit`    | `cargo audit`               | -                             | Vulnerability scanning            |
+| `code-quality`      | Knip + cspell + cargo-udeps | -                             | Informational (continue-on-error) |
 
 **Key actions:**
 
@@ -917,7 +916,7 @@ dbus-run-session -- sh -c '
 
 **File:** `.github/workflows/release.yml`
 
-Triggered on tag push matching `v*` (e.g., `v0.4.0`).
+Triggered on tag push matching `v*` (e.g., `v1.0.0`).
 
 ```yaml
 permissions:
@@ -931,7 +930,7 @@ permissions:
 | `ci-check` | Re-runs the full CI workflow (reuses `ci.yml`) |
 | `build`    | Matrix build across Linux, macOS, and Windows  |
 
-The build job uses `tauri-apps/tauri-action@v0` to build and upload
+The build job uses `tauri-apps/tauri-action@v1` to build and upload
 platform-specific artifacts:
 
 | Platform | Runner           | Target                     | Artifacts           |
@@ -941,7 +940,7 @@ platform-specific artifacts:
 | Windows  | `windows-latest` | `x86_64-pc-windows-msvc`   | `.msi`, `.exe`      |
 
 Creates a **draft** GitHub Release with platform installers. The release body
-links to `CHANGELOG.md`.
+links to `changelog.md`.
 
 ### Enforcement Summary
 
