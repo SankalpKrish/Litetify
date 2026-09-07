@@ -60,7 +60,7 @@ jobs:
           releaseBody: |
             ## Litetify ${{ github.ref_name }}
 
-            See [CHANGELOG.md](../../blob/main/CHANGELOG.md) for full details.
+            See [changelog.md](../../blob/main/changelog.md) for full details.
 
             ### Installation
             - **Windows:** Download and run the `.msi` or `.exe` installer
