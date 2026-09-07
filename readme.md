@@ -6,7 +6,7 @@
 
 <p align="center">
   A lightweight, moddable Spotify Premium desktop client.<br />
-  Native shell. Small footprint. Yours to extend.
+ Small, fast and fully yours to customise.
 </p>
 
 <p align="center">
