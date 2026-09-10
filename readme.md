@@ -70,11 +70,11 @@ The Client ID is saved in app config. Access and refresh tokens are stored in th
 
 Drop a package into `mods/` and enable it in Settings.
 
-| Type       | Role                               | Example                           |
-| ---------- | ---------------------------------- | --------------------------------- |
-| Theme      | Override design tokens with CSS    | `mods/examples/dark-theme/`       |
-| Extension  | Sandboxed JS via `window.Litetify` | `mods/examples/skip-to-favorite/` |
-| Custom app | Full page as a sidebar tab         | See `mods/examples/`              |
+| Type       | Role                               | Example                             |
+| ---------- | ---------------------------------- | ----------------------------------- |
+| Theme      | Override design tokens with CSS    | `mods/examples/dark-theme/`         |
+| Extension  | Sandboxed JS via `window.Litetify` | `mods/examples/skip-to-favorite/`   |
+| Custom app | Full page as a sidebar tab         | See `docs/development.md` section 9 |
 
 Shipped Catppuccin themes: Frappe, Latte, Macchiato, Mocha.
 
@@ -91,7 +91,7 @@ See [security.md](security.md) for the sandbox model.
 | `bun run tauri build` | Native installers            |
 | `bun run lint`        | ESLint, zero warnings        |
 | `bun run typecheck`   | `tsc --noEmit`               |
-| `bun test`            | Vitest                       |
+| `bun run test`        | Vitest                       |
 | `bun run test:rust`   | Cargo tests                  |
 
 Contributor setup: [docs/getting-started.md](docs/getting-started.md), [architecture.md](architecture.md), [contributing.md](contributing.md).

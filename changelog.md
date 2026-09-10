@@ -5,7 +5,26 @@ All notable changes to Litetify are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.4.0] — 2025-07-24
+## [1.0.0] - 2026-09-07
+
+### Added
+
+- Public release: Tauri v2 + React 19 Spotify Premium desktop client at version 1.0.0 (`package.json`, `src-tauri/tauri.conf.json`, `src-tauri/Cargo.toml`)
+- Spotify Web Playback SDK playback via Rust WebSDK event relay (`playback/websdk.rs`, `src/playback/websdk.ts`)
+- Authorization Code with PKCE, OS keychain token storage, Premium check at login
+- Spotify Web API proxy covering profile, playlists, library, albums, artists, search, player, devices, shows
+- Mod system: CSS themes, sandboxed extensions via `window.Litetify`, custom sidebar apps
+- Shipped Catppuccin themes (Frappe, Latte, Macchiato, Mocha) plus `mods/examples/` theme and extension samples
+- Persistent config via Tauri store plugin with in-memory frontend cache
+- Vitest frontend tests, Cargo Rust tests with mockito, CI and release workflows
+
+### Changed
+
+- Playback is WebSDK-only in this release; there is no Rust `playback::librespot` module and no `librespot` Cargo feature
+- Playlist item endpoints use `/playlists/{id}/items`
+- Release pipeline uses `tauri-apps/tauri-action@v1` and triggers on `main` branch CI
+
+## [0.4.0] - 2025-07-24
 
 ### Added
 
@@ -54,7 +73,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bumped dependencies to fix vulnerabilities
 - Updated librespot to 0.8
 
-## [0.3.0] — 2025-07-20
+## [0.3.0] - 2025-07-20
 
 ### Added
 
@@ -77,7 +96,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated librespot to 0.8
 - Renamed documentation filenames to lowercase
 
-## [0.2.0] — 2025-07-18
+## [0.2.0] - 2025-07-18
 
 ### Added
 
@@ -96,7 +115,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Custom apps blocked by CSP
 - Mods folder button and path resolution
 
-## [0.1.0] — 2025-07-16
+## [0.1.0] - 2025-07-16
 
 ### Added
 
@@ -114,6 +133,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Architecture and design documentation
 - CI/CD pipeline with GitHub Actions
 
+[1.0.0]: https://github.com/SankalpKrish/Litetify/releases/tag/v1.0.0
 [0.4.0]: https://github.com/SankalpKrish/Litetify/releases/tag/v0.4.0
 [0.3.0]: https://github.com/SankalpKrish/Litetify/releases/tag/v0.3.0
 [0.2.0]: https://github.com/SankalpKrish/Litetify/releases/tag/v0.2.0

@@ -29,7 +29,7 @@ By contributing, you agree that your contributions will be licensed under the [M
 
 ## Code of Conduct
 
-This project adheres to the [Contributor Covenant](https://www.contributor-covenant.org/version/2/1/code_of_conduct/) code of conduct. We expect all participants — contributors, maintainers, and users alike — to foster a respectful, inclusive, and harassment-free environment.
+This project adheres to the [Contributor Covenant](https://www.contributor-covenant.org/version/2/1/code_of_conduct/) code of conduct. We expect all participants - contributors, maintainers, and users alike - to foster a respectful, inclusive, and harassment-free environment.
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the maintainers.
 
@@ -39,9 +39,9 @@ Instances of abusive, harassing, or otherwise unacceptable behavior may be repor
 
 ### Prerequisites
 
-- **Bun** >=1.3 — [install guide](https://bun.sh/docs/installation)
-- **Rust stable toolchain** — [rustup](https://rustup.rs/) (MSRV: 1.77.2)
-- **Node.js** >=20 — required by some tooling (the project provides an `.nvmrc`)
+- **Bun** >=1.3 - [install guide](https://bun.sh/docs/installation)
+- **Rust stable toolchain** - [rustup](https://rustup.rs/) (MSRV: 1.77.2)
+- **Node.js** >=20 - required by some tooling (the project provides an `.nvmrc`)
 - **Platform build dependencies** for [Tauri v2](https://tauri.app/start/prerequisites/):
   - **Windows**: WebView2 (ships with Windows 11, available via runtime on Windows 10) and [Visual Studio Build Tools](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2022) with the "Desktop development with C++" workload
   - **macOS**: Xcode Command Line Tools (`xcode-select --install`)
@@ -69,8 +69,8 @@ See [docs/getting-started.md](docs/getting-started.md) for a detailed walkthroug
 
 ### Branching
 
-- **`master`** — the main development branch. All pull requests target `master`.
-- Feature branches should be created from `master` and follow a descriptive naming pattern: e.g., `feat/add-crossfade`, `fix/seek-accuracy`, `refactor/player-engine`.
+- **`main`** - the main development branch. All pull requests target `main`.
+- Feature branches should be created from `main` and follow a descriptive naming pattern: e.g., `feat/add-crossfade`, `fix/seek-accuracy`, `refactor/player-engine`.
 
 ### Commit Conventions
 
@@ -120,7 +120,7 @@ All contributions must pass the following checks before being accepted:
 bun run lint
 ```
 
-The project enforces a strict zero-warning policy. ESLint is configured with `@typescript-eslint` strict rules and React Hooks linting. Any warning or error must be resolved before merging.
+The project enforces a strict zero-warning policy. ESLint is configured with `@typescript-eslint` recommended rules and React Hooks linting. Any warning or error must be resolved before merging.
 
 ### Prettier
 
@@ -198,7 +198,7 @@ Both frontend and Rust test suites run in CI. All tests must pass for a pull req
 
 ## Pull Request Process
 
-1. **Create a feature branch** from `master` with a descriptive name.
+1. **Create a feature branch** from `main` with a descriptive name.
 2. **Make your changes**, following the code quality standards above.
 3. **Run all local checks** before opening a PR:
 
@@ -210,7 +210,7 @@ bun run test:rust
 bun run format:check
 ```
 
-4. **Open a pull request** against `master`. Provide a clear title following conventional commits and a description explaining what the change does and why.
+4. **Open a pull request** against `main`. Provide a clear title following conventional commits and a description explaining what the change does and why.
 5. **CI runs automatically** with the following gates that must pass:
 
 | Job              | What it checks                                                       |
@@ -224,7 +224,7 @@ bun run format:check
 | `code-quality`   | Knip (unused code), cspell (spellcheck), cargo-udeps (informational) |
 
 6. **Address any feedback** from reviewers. PRs require at least one maintainer approval before merging.
-7. **Squash-merge** is preferred to keep the commit history clean on `master`.
+7. **Squash-merge** is preferred to keep the commit history clean on `main`.
 
 ---
 
@@ -253,11 +253,11 @@ mods/
 ### Important rules
 
 - **Extensions run in sandboxed iframes** with no access to `ipc:` or Tauri commands. They communicate exclusively through the versioned `window.Litetify` API.
-- **Themes inject CSS** into the app's design system. They can override any CSS custom property (`--lt-*` tokens). Avoid `!important` where possible — prefer token overrides.
+- **Themes inject CSS** into the app's design system. They can override any CSS custom property (`--lt-*` tokens). Avoid `!important` where possible - prefer token overrides.
 - **Custom apps** register via the manifest and appear as sidebar entries. They receive their own view and routing context.
-- **The `mods/` directory is gitignored** except for the `mods/examples/` folder. Commit example mods only — keep personal mods private.
+- **The `mods/` directory is gitignored** except for the `mods/examples/` folder. Commit example mods only - keep personal mods private.
 
-A full authoring guide is maintained at `docs/MODDING.md`. See the `mods/examples/` directory for reference implementations.
+A full authoring guide is maintained in `docs/development.md` section 9. See the `mods/examples/` directory for reference implementations.
 
 ---
 
