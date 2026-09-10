@@ -146,4 +146,11 @@ describe('VolumeControl', () => {
     expect(usePlayerStore.getState().volume).toBe(100);
     expect(engine.setVolume).toHaveBeenCalledWith(100);
   });
+
+  it('applies custom style to root element for full-width layouts', () => {
+    const { container } = render(<VolumeControl style={{ width: '100%' }} />);
+
+    const root = container.firstChild as HTMLElement;
+    expect(root.style.width).toBe('100%');
+  });
 });

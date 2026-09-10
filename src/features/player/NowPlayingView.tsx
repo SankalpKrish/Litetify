@@ -150,7 +150,13 @@ const S: Record<string, React.CSSProperties> = {
     alignItems: 'center',
     gap: 8,
     width: '100%',
-    maxWidth: 300,
+    // Match the controls row width (4x44 ctrl-btns + 56 play btn + 4x16
+    // gaps = 296) with a right inset of one control button (44), so the
+    // volume track ends at the loop button's left edge. border-box keeps
+    // the padding from growing the centered box.
+    maxWidth: 296,
+    paddingRight: 44,
+    boxSizing: 'border-box',
   },
   volumeBar: {
     flex: 1,
@@ -353,7 +359,7 @@ function NowPlayingViewInner({ onNavigate, onBack }: NowPlayingViewProps) {
 
         {/* Volume */}
         <div style={S.volumeSection}>
-          <VolumeControl />
+          <VolumeControl style={{ width: '100%' }} />
         </div>
       </div>
     </div>

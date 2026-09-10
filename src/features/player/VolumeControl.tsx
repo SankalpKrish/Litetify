@@ -1,4 +1,5 @@
 import { memo, useCallback, useRef, useState } from 'react';
+import type { CSSProperties } from 'react';
 import { usePlayerStore } from './playerStore';
 import styles from './VolumeControl.module.css';
 
@@ -27,7 +28,11 @@ const SpeakerIcon = memo(function SpeakerIcon({ muted }: { muted: boolean }) {
   );
 });
 
-export const VolumeControl = memo(function VolumeControl() {
+export const VolumeControl = memo(function VolumeControl({
+  style,
+}: {
+  style?: CSSProperties;
+}) {
   const volume = usePlayerStore((s) => s.volume);
   const setState = usePlayerStore((s) => s.setState);
   const getEngine = usePlayerStore((s) => s.getEngine);
@@ -89,7 +94,7 @@ export const VolumeControl = memo(function VolumeControl() {
   );
 
   return (
-    <div className={styles['volume-control']}>
+    <div className={styles['volume-control']} style={style}>
       <button
         className="ctrl-btn ctrl-icon-btn"
         onClick={handleMute}
