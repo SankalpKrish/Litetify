@@ -70,10 +70,10 @@ The Client ID is saved in app config. Access and refresh tokens are stored in th
 
 Drop a package into `mods/` and enable it in Settings.
 
-| Type       | Role                               | Example                           |
-| ---------- | ---------------------------------- | --------------------------------- |
-| Theme      | Override design tokens with CSS    | `mods/examples/dark-theme/`       |
-| Extension  | Sandboxed JS via `window.Litetify` | `mods/examples/skip-to-favorite/` |
+| Type       | Role                               | Example                             |
+| ---------- | ---------------------------------- | ----------------------------------- |
+| Theme      | Override design tokens with CSS    | `mods/examples/dark-theme/`         |
+| Extension  | Sandboxed JS via `window.Litetify` | `mods/examples/skip-to-favorite/`   |
 | Custom app | Full page as a sidebar tab         | See `docs/development.md` section 9 |
 
 Shipped Catppuccin themes: Frappe, Latte, Macchiato, Mocha.

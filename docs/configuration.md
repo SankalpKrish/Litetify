@@ -358,22 +358,22 @@ changes are handled by Cargo.
 
 **File:** `package.json`
 
-| Script           | Command                                           |
-| ---------------- | ------------------------------------------------- |
-| `dev`            | `vite`                                            |
-| `build`          | `tsc --noEmit && vite build`                      |
-| `preview`        | `vite preview`                                    |
-| `tauri`          | `tauri` (CLI passthrough)                         |
-| `lint`           | `eslint . --max-warnings 0`                       |
-| `format`         | `prettier --write .`                              |
-| `format:check`   | `prettier --check .`                              |
-| `typecheck`      | `tsc --noEmit`                                    |
-| `test`           | `vitest run`                                      |
-| `test:rust`      | `cargo test --manifest-path src-tauri/Cargo.toml` |
-| `types:generate` | `typeshare src-tauri/src/ --lang=typescript ...`  |
+| Script           | Command                                                                     |
+| ---------------- | --------------------------------------------------------------------------- |
+| `dev`            | `vite`                                                                      |
+| `build`          | `tsc --noEmit && vite build`                                                |
+| `preview`        | `vite preview`                                                              |
+| `tauri`          | `tauri` (CLI passthrough)                                                   |
+| `lint`           | `eslint . --max-warnings 0`                                                 |
+| `format`         | `prettier --write .`                                                        |
+| `format:check`   | `prettier --check .`                                                        |
+| `typecheck`      | `tsc --noEmit`                                                              |
+| `test`           | `vitest run`                                                                |
+| `test:rust`      | `cargo test --manifest-path src-tauri/Cargo.toml`                           |
+| `types:generate` | `typeshare src-tauri/src/ --lang=typescript ...`                            |
 | `types:check`    | `npm run types:generate && git diff --exit-code src/lib/types.generated.ts` |
-| `knip`           | `knip`                                            |
-| `spellcheck`     | `cspell --no-progress .`                          |
+| `knip`           | `knip`                                                                      |
+| `spellcheck`     | `cspell --no-progress .`                                                    |
 
 Node engine requirements: `>=20`. Bun engine: `>=1.3`.
 
@@ -381,14 +381,14 @@ Node engine requirements: `>=20`. Bun engine: `>=1.3`.
 
 **File:** `src-tauri/Cargo.toml`
 
-| Section            | Key entries                                                                                                                                                                                                                        |
-| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Package metadata   | `name = "litetify"`, `version = "1.0.0"`, `edition = "2021"`, `rust-version = "1.77.2"`                                                                                                                                            |
-| Library targets    | `staticlib`, `cdylib`, `rlib`                                                                                                                                                                                                      |
-| Build dependencies | `tauri-build 2`                                                                                                                                                                                                                    |
+| Section            | Key entries                                                                                                                                                                                                                                                                 |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Package metadata   | `name = "litetify"`, `version = "1.0.0"`, `edition = "2021"`, `rust-version = "1.77.2"`                                                                                                                                                                                     |
+| Library targets    | `staticlib`, `cdylib`, `rlib`                                                                                                                                                                                                                                               |
+| Build dependencies | `tauri-build 2`                                                                                                                                                                                                                                                             |
 | Dependencies       | `tauri 2`, `tauri-plugin-opener 2`, `open 5`, `tauri-plugin-updater 2`, `serde 1`, `serde_json 1`, `reqwest 0.12`, `sha2 0.10`, `base64 0.22`, `tiny_http 0.12`, `keyring 2`, `rand 0.8`, `url 2`, `chrono 0.4`, `tokio 1`, `typeshare 1.0.5`, `log 0.4`, `env_logger 0.11` |
-| Dev dependencies   | `mockito 1`                                                                                                                                                                                                                        |
-| Features           | `default = []`                                                                                                                                                                                                                     |
+| Dev dependencies   | `mockito 1`                                                                                                                                                                                                                                                                 |
+| Features           | `default = []`                                                                                                                                                                                                                                                              |
 
 In v1.0.0 the Rust backend ships the Web Playback SDK engine only.
 There is no `librespot` dependency and no `librespot` Cargo feature.

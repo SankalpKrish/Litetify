@@ -300,12 +300,12 @@ All Rust-to-frontend IPC is defined in `src-tauri/src/lib.rs` via the
 
 Command categories:
 
-| Module      | Commands                                                                          | Purpose           |
-| ----------- | --------------------------------------------------------------------------------- | ----------------- |
-| `auth/`     | `login`, `logout`, `check_auth`, `get_valid_token`, `get_profile`                 | OAuth lifecycle   |
-| `api/`      | `api_get_me`, `api_search`, `api_play`, `api_pause`, ...                          | Spotify API proxy |
-| `playback/` | `engine_play`, `engine_seek`, `engine_pause`, `engine_resume`, ... (websdk only)  | Playback control  |
-| `mods/`     | `scan_mods`, `read_mod_file`, `get_mods_path`, `open_mods_folder`, `open_path`    | Mod filesystem    |
+| Module      | Commands                                                                         | Purpose           |
+| ----------- | -------------------------------------------------------------------------------- | ----------------- |
+| `auth/`     | `login`, `logout`, `check_auth`, `get_valid_token`, `get_profile`                | OAuth lifecycle   |
+| `api/`      | `api_get_me`, `api_search`, `api_play`, `api_pause`, ...                         | Spotify API proxy |
+| `playback/` | `engine_play`, `engine_seek`, `engine_pause`, `engine_resume`, ... (websdk only) | Playback control  |
+| `mods/`     | `scan_mods`, `read_mod_file`, `get_mods_path`, `open_mods_folder`, `open_path`   | Mod filesystem    |
 
 ### The PlaybackEngine Trait
 
@@ -672,10 +672,10 @@ types are not regenerated, the pipeline fails.
 
 ### Build Commands
 
-| Command                   | What It Does                                 |
-| ------------------------- | -------------------------------------------- |
-| `bun run build`           | `tsc --noEmit && vite build` (frontend only) |
-| `bun run tauri build`     | Full desktop app build + platform installer  |
+| Command               | What It Does                                 |
+| --------------------- | -------------------------------------------- |
+| `bun run build`       | `tsc --noEmit && vite build` (frontend only) |
+| `bun run tauri build` | Full desktop app build + platform installer  |
 
 ---
 

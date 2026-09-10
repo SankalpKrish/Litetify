@@ -56,22 +56,22 @@ All Spotify Web API calls flow through a Rust backend proxy embedded in the Taur
 
 ### Module Layout
 
-| Module                | File                    | Responsibility                                              |
-| --------------------- | ----------------------- | ----------------------------------------------------------- |
-| `api::req`            | `api/req.rs`            | Shared HTTP client, retry logic, Spotify API data types     |
-| `api::albums`         | `api/albums.rs`         | Album-related endpoints                                     |
-| `api::artists`        | `api/artists.rs`        | Artist detail, top tracks, albums, related, follow/unfollow |
-| `api::devices`        | `api/devices.rs`        | Available devices, transfer playback                        |
-| `api::library`        | `api/library.rs`        | Liked tracks, save/remove/check library                     |
-| `api::player`         | `api/player.rs`         | Currently playing, play/pause/skip/shuffle/repeat, queue    |
-| `api::playlists`      | `api/playlists.rs`      | CRUD playlists, tracks, follow/unfollow                     |
-| `api::profile`        | `api/profile.rs`        | User profile, top artists/tracks, recently played           |
-| `api::search`         | `api/search.rs`         | Search, recommendations                                     |
-| `api::shows`          | `api/shows.rs`          | Podcasts/shows: saved list, detail, episodes                |
-| `auth`                | `auth/`                 | PKCE flow, OAuth callback server, token storage/refresh     |
-| `playback::websdk`    | `playback/websdk.rs`    | WebSDK playback control via Tauri events                    |
-| `mods`                | `mods/`                 | Mod scanning, manifest loading, sandboxed file reads        |
-| `config`              | `config.rs`             | Persistent user configuration via tauri-plugin-store        |
+| Module             | File                 | Responsibility                                              |
+| ------------------ | -------------------- | ----------------------------------------------------------- |
+| `api::req`         | `api/req.rs`         | Shared HTTP client, retry logic, Spotify API data types     |
+| `api::albums`      | `api/albums.rs`      | Album-related endpoints                                     |
+| `api::artists`     | `api/artists.rs`     | Artist detail, top tracks, albums, related, follow/unfollow |
+| `api::devices`     | `api/devices.rs`     | Available devices, transfer playback                        |
+| `api::library`     | `api/library.rs`     | Liked tracks, save/remove/check library                     |
+| `api::player`      | `api/player.rs`      | Currently playing, play/pause/skip/shuffle/repeat, queue    |
+| `api::playlists`   | `api/playlists.rs`   | CRUD playlists, tracks, follow/unfollow                     |
+| `api::profile`     | `api/profile.rs`     | User profile, top artists/tracks, recently played           |
+| `api::search`      | `api/search.rs`      | Search, recommendations                                     |
+| `api::shows`       | `api/shows.rs`       | Podcasts/shows: saved list, detail, episodes                |
+| `auth`             | `auth/`              | PKCE flow, OAuth callback server, token storage/refresh     |
+| `playback::websdk` | `playback/websdk.rs` | WebSDK playback control via Tauri events                    |
+| `mods`             | `mods/`              | Mod scanning, manifest loading, sandboxed file reads        |
+| `config`           | `config.rs`          | Persistent user configuration via tauri-plugin-store        |
 
 ---
 
@@ -137,14 +137,14 @@ All commands are registered in `src-tauri/src/lib.rs` via `tauri::generate_handl
 
 ### System
 
-| Command            | Rust Path              | Args                                  | Returns                  | Notes                                      |
-| ------------------ | ---------------------- | ------------------------------------- | ------------------------ | ------------------------------------------ |
-| `ping`             | `ping`                 | -                                     | `String`                 | Returns `"Litetify core v{version} ready"` |
-| `scan_mods`        | `scan_mods`            | -                                     | `Vec<ModEntry>`          | Scans `mods/` directory for mod manifests  |
-| `read_mod_file`    | `read_mod_file`        | `mod_path: String, file_path: String` | `Result<String>`         | Sandboxed file read within mod directory   |
-| `get_mods_path`    | `get_mods_path`        | -                                     | `String`                 | Current mods directory path                |
-| `open_mods_folder` | `open_mods_folder`     | -                                     | `Result<()>`             | Open mods folder in file explorer          |
-| `open_path`        | `open_path`            | `path: String`                        | `Result<()>`             | Open arbitrary path in file explorer       |
+| Command            | Rust Path          | Args                                  | Returns          | Notes                                      |
+| ------------------ | ------------------ | ------------------------------------- | ---------------- | ------------------------------------------ |
+| `ping`             | `ping`             | -                                     | `String`         | Returns `"Litetify core v{version} ready"` |
+| `scan_mods`        | `scan_mods`        | -                                     | `Vec<ModEntry>`  | Scans `mods/` directory for mod manifests  |
+| `read_mod_file`    | `read_mod_file`    | `mod_path: String, file_path: String` | `Result<String>` | Sandboxed file read within mod directory   |
+| `get_mods_path`    | `get_mods_path`    | -                                     | `String`         | Current mods directory path                |
+| `open_mods_folder` | `open_mods_folder` | -                                     | `Result<()>`     | Open mods folder in file explorer          |
+| `open_path`        | `open_path`        | `path: String`                        | `Result<()>`     | Open arbitrary path in file explorer       |
 
 Note: `get_config`, `set_config`, and `reset_config` are defined in
 `src-tauri/src/config.rs` but are not registered in `generate_handler!`
@@ -221,16 +221,16 @@ in v1.0.0, so they are not invocable until registered.
 
 ### Player (Spotify API proxy)
 
-| Command                     | Rust Path                                | Args                                                           | Returns           | Notes                           |
-| --------------------------- | ---------------------------------------- | -------------------------------------------------------------- | ----------------- | ------------------------------- |
-| `api_get_currently_playing` | `api::player::api_get_currently_playing` | -                                                              | `CurrentlyPlaying | null`                           | Current playback state; null if nothing playing |
+| Command                     | Rust Path                                | Args                                                | Returns           | Notes                           |
+| --------------------------- | ---------------------------------------- | --------------------------------------------------- | ----------------- | ------------------------------- |
+| `api_get_currently_playing` | `api::player::api_get_currently_playing` | -                                                   | `CurrentlyPlaying | null`                           | Current playback state; null if nothing playing |
 | `api_play`                  | `api::player::api_play`                  | `device_id, uri?, context_uri?, uris?, offset_uri?` | `()`              | Resume or play specific content |
-| `api_pause`                 | `api::player::api_pause`                 | `device_id`                                                   | `()`              | Pause playback                  |
-| `api_next`                  | `api::player::api_next`                  | `device_id`                                                   | `()`              | Skip to next                    |
-| `api_previous`              | `api::player::api_previous`              | `device_id`                                                   | `()`              | Skip to previous                |
-| `api_set_shuffle`           | `api::player::api_set_shuffle`           | `state, device_id`                                            | `()`              | Toggle shuffle                  |
-| `api_set_repeat`            | `api::player::api_set_repeat`            | `state, device_id`                                            | `()`              | `off`, `context`, or `track`    |
-| `api_add_to_queue`          | `api::player::api_add_to_queue`          | `uri, device_id?`                                              | `()`              | Add track to playback queue     |
+| `api_pause`                 | `api::player::api_pause`                 | `device_id`                                         | `()`              | Pause playback                  |
+| `api_next`                  | `api::player::api_next`                  | `device_id`                                         | `()`              | Skip to next                    |
+| `api_previous`              | `api::player::api_previous`              | `device_id`                                         | `()`              | Skip to previous                |
+| `api_set_shuffle`           | `api::player::api_set_shuffle`           | `state, device_id`                                  | `()`              | Toggle shuffle                  |
+| `api_set_repeat`            | `api::player::api_set_repeat`            | `state, device_id`                                  | `()`              | `off`, `context`, or `track`    |
+| `api_add_to_queue`          | `api::player::api_add_to_queue`          | `uri, device_id?`                                   | `()`              | Add track to playback queue     |
 
 ### Devices
 
